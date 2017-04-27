@@ -45,12 +45,12 @@
 MFRC522 mfrc522;   // Create MFRC522 instance.
 
 //speaker
-#include <SoftwareSerial.h>
 #include "speaker.h"
 #define SPEAKER_PIN 8
 
-//Software Serial connection (connected to XBee Wifi)
-SoftwareSerial ssXBee(2, 3);
+////Software Serial connection (connected to XBee Wifi)
+//#include <SoftwareSerial.h>
+//SoftwareSerial ssXBee(2, 3);
 
 /**
    Initialize.
@@ -63,8 +63,8 @@ void setup() {
   mfrc522.PCD_Init(SS_PIN, RST_PIN); // Init each MFRC522 card
   mfrc522.PCD_DumpVersionToSerial();
 
-  //ssXBee
-  ssXBee.begin(9600);
+  //  //ssXBee
+  //  ssXBee.begin(9600);
 }
 
 /**
@@ -86,12 +86,12 @@ void loop() {
     mfrc522.PICC_HaltA(); // Halt PICC
     mfrc522.PCD_StopCrypto1(); // Stop encryption on PCD
 
-    //ssXBee
-    String xbeeStr = "RFID-UID,";
-    xbeeStr += tempUidStr;
-    ssXBee.println(xbeeStr);
-    
-//speaker
+    //    //ssXBee
+    //    String xbeeStr = "RFID-UID,";
+    //    xbeeStr += tempUidStr;
+    //    ssXBee.println(xbeeStr);
+
+    //speaker
     melody(SPEAKER_PIN);
   } //if (mfrc522.PICC_IsNewC
 }
