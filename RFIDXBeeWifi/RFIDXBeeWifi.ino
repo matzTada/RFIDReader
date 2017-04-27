@@ -48,6 +48,14 @@ MFRC522 mfrc522;   // Create MFRC522 instance.
 #include "speaker.h"
 #define SPEAKER_PIN 8
 
+//buttons
+#include "button.h"
+#define BUTTON_1_PIN 4
+#define BUTTON_2_PIN 5
+#define BUTTON_3_PIN 6
+#define BUTTON_4_PIN 7
+Buttons buttons = Buttons(BUTTON_1_PIN, BUTTON_2_PIN, BUTTON_3_PIN, BUTTON_4_PIN);
+
 ////Software Serial connection (connected to XBee Wifi)
 //#include <SoftwareSerial.h>
 //SoftwareSerial ssXBee(2, 3);
@@ -71,6 +79,8 @@ void setup() {
    Main loop.
 */
 void loop() {
+  buttons.updateLastButtonNumber();
+
   if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) { // Look for new cards
     // Show some details of the PICC (that is: the tag/card)
     Serial.print(F("New Card Detected!! Card UID:"));
@@ -90,6 +100,10 @@ void loop() {
     //    String xbeeStr = "RFID-UID,";
     //    xbeeStr += tempUidStr;
     //    ssXBee.println(xbeeStr);
+
+    //buttons
+    Serial.print("lastButtonNumber: ");
+    Serial.println(buttons.lastButtonNumber);
 
     //speaker
     melody(SPEAKER_PIN);
