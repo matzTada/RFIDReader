@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 #include "lcd.h"
 
-=======
-#include<LiquidCrystal.h>
->>>>>>> parent of 637db65... try to add lcd
 
 #define LCD_RS_PIN 3
 #define LCD_RW_PIN A1
