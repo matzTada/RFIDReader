@@ -1,3 +1,5 @@
+#include "lcd.h"
+
 #include<LiquidCrystal.h>
 
 #define LCD_COLS 16
