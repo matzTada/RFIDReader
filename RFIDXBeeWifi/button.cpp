@@ -9,11 +9,14 @@ Buttons::Buttons(int pin1, int pin2, int pin3, int pin4) {
   for (int i = 0; i < (sizeof(pins) / sizeof(int)); i++) pinMode(pins[i], INPUT_PULLUP);
 }
 
-void Buttons::updateLastButtonNumber() {
+boolean Buttons::updateLastButtonNumber() {
+  boolean pushedFlag = false;
   for (int i = 0; i < (sizeof(pins) / sizeof(int)); i++) {
     if (digitalRead(pins[i]) == LOW) { //CAUTION!! INPUT_PULLUP is used!
       lastButtonNumber = i;
+      pushedFlag = true;
     }
   }
+  return pushedFlag;
 }
 
