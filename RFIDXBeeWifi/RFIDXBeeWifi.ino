@@ -1,33 +1,5 @@
-/**
-   --------------------------------------------------------------------------------------------------------------------
-   Example sketch/program showing how to read data from more than one PICC to serial.
-   --------------------------------------------------------------------------------------------------------------------
-   This is a MFRC522 library example; for further details and other examples see: https://github.com/miguelbalboa/rfid
-
-   Example sketch/program showing how to read data from more than one PICC (that is: a RFID Tag or Card) using a
-   MFRC522 based RFID Reader on the Arduino SPI interface.
-
-   Warning: This may not work! Multiple devices at one SPI are difficult and cause many trouble!! Engineering skill
-            and knowledge are required!
-
-   @license Released into the public domain.
-
-   Typical pin layout used:
-   -----------------------------------------------------------------------------------------
-               MFRC522      Arduino       Arduino   Arduino    Arduino          Arduino
-               Reader/PCD   Uno/101       Mega      Nano v3    Leonardo/Micro   Pro Micro
-   Signal      Pin          Pin           Pin       Pin        Pin              Pin
-   -----------------------------------------------------------------------------------------
-   RST/Reset   RST          9             5         D9         RESET/ICSP-5     RST
-   SPI SS 1    SDA(SS)      ** custom, take a unused pin, only HIGH/LOW required *
-   SPI SS 2    SDA(SS)      ** custom, take a unused pin, only HIGH/LOW required *
-   SPI MOSI    MOSI         11 / ICSP-4   51        D11        ICSP-4           16
-   SPI MISO    MISO         12 / ICSP-1   50        D12        ICSP-1           14
-   SPI SCK     SCK          13 / ICSP-3   52        D13        ICSP-3           15
-
-*/
-
 /*
+   RFID reader based on this example https://github.com/miguelbalboa/rfid
    2017/4/15 Modified by TadaMatz
    Tell card id beased on UID
    RGB LED is optional
@@ -36,6 +8,8 @@
    Delete RGB
    Add Piezzo Speaker
 */
+
+#define PACKET_PREFIX_RRN "RRN" //RFID reader Node
 
 //RFID reader
 #include <SPI.h>
@@ -80,7 +54,7 @@ void setup() {
   //RFID reader
   SPI.begin();        // Init SPI bus
   mfrc522.PCD_Init(SS_PIN, RST_PIN); // Init each MFRC522 card
-  mfrc522.PCD_DumpVersionToSerial();
+  //  mfrc522.PCD_DumpVersionToSerial();
 
   //LCD
   lcd.initialize();
@@ -104,15 +78,15 @@ void loop() {
 
   if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) { // Look for new cards
     // Show some details of the PICC (that is: the tag/card)
-    Serial.print(F("New Card Detected!! Card UID:"));
+    //    Serial.print(F("New Card Detected!! Card UID:"));
     String tempUidStr = dump_byte_array_to_string(mfrc522.uid.uidByte, mfrc522.uid.size);
     tempUidStr.trim();
-    Serial.print(tempUidStr);
-    Serial.println();
+    //    Serial.print(tempUidStr);
+    //    Serial.println();
 
-    Serial.print(F("PICC type: "));
+    //    Serial.print(F("PICC type: "));
     MFRC522::PICC_Type piccType = mfrc522.PICC_GetType(mfrc522.uid.sak);
-    Serial.println(mfrc522.PICC_GetTypeName(piccType));
+    //    Serial.println(mfrc522.PICC_GetTypeName(piccType));
 
     mfrc522.PICC_HaltA(); // Halt PICC
     mfrc522.PCD_StopCrypto1(); // Stop encryption on PCD
@@ -123,17 +97,24 @@ void loop() {
     //    ssXBee.println(xbeeStr);
 
     //buttons
-    Serial.print("lastButtonNumber: ");
-    Serial.println(buttons.lastButtonNumber);
+    //    Serial.print("lastButtonNumber: ");
+    //    Serial.println(buttons.lastButtonNumber);
+
+    //data send
+    Serial.print(PACKET_PREFIX_RRN);
+    Serial.print(",");
+    Serial.print(tempUidStr);
+    Serial.print(",");
+    Serial.print(buttons.lastButtonNumber);
+    Serial.println("");
 
     //LCD
-        String tempLCDStr = "";
+    String tempLCDStr = "";
     tempLCDStr += " Button: ";
     tempLCDStr += String(buttons.lastButtonNumber);
     tempLCDStr += " RFID-UID: ";
     tempLCDStr += tempUidStr;
     lcd.updateString(tempLCDStr, 1);
-
 
     //speaker
     melody(SPEAKER_PIN);
